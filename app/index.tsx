@@ -1,15 +1,26 @@
+import React, { useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+  ActivityIndicator,
+  Platform,
+  SafeAreaView,
+} from "react-native";
+import { router } from "expo-router";
+import { useQuery, useMutation } from "../convex/react";
+import { api } from "../convex/_generated/api";
+import { Ionicons } from "@expo/vector-icons";
+import { useUser } from "@/context/UserContext";
+import { ChatRoom } from "../types/models";
+import { Id } from "@/convex/_generated/dataModel";
+import Header from "@/components/Header";
 
-import React,{useEffect} from 'react';
-import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
-import { router } from 'expo-router';
-import { useQuery,useMutation } from '../convex/react';
-import { api } from '../convex/_generated/api';
-import { Ionicons } from '@expo/vector-icons';
-import { useUser } from '@/context/UserContext';
-import { ChatRoom } from '../types/models';
-import { Id } from '@/convex/_generated/dataModel';
 export default function ChatRoomsScreen() {
   const { user, isLoading } = useUser();
+
   const chatRooms = useQuery(api.chatRooms.getAllChatRooms); // fetch ALL chat rooms
   const joinChat = useMutation(api.chatRooms.joinChatRoom);
   const myRooms = useQuery(
@@ -28,11 +39,11 @@ export default function ChatRoomsScreen() {
         chatRoomId: chatRoomId as Id<"chatRooms">,
         userId: user.userId,
       });
-      
+
       if (res?.alreadyJoined) {
-        console.log('User is already a member');
+        console.log("User is already a member");
       }
-      router.push({ pathname: '/chat/[id]', params: { id: chatRoomId, name } });
+      router.push({ pathname: "/chat/[id]", params: { id: chatRoomId, name } });
     } catch (err) {
       console.error("Failed to join", err);
     }
@@ -44,13 +55,21 @@ export default function ChatRoomsScreen() {
       <TouchableOpacity
         style={styles.chatRoomItem}
         onPress={() =>
-          joined ? router.push({ pathname: '/chat/[id]', params: { id: item._id, name: item.name } }) :
-          handleJoin(item._id, item.name)
+          joined
+            ? router.push({
+                pathname: "/chat/[id]",
+                params: { id: item._id, name: item.name },
+              })
+            : handleJoin(item._id, item.name)
         }
       >
         <View style={styles.chatRoomHeader}>
           <Text style={styles.chatRoomName}>{item.name}</Text>
-          <Ionicons name={joined ? "chevron-forward" : "log-in-outline"} size={20} color="#888" />
+          <Ionicons
+            name={joined ? "chevron-forward" : "log-in-outline"}
+            size={20}
+            color="#888"
+          />
         </View>
         <Text style={styles.chatRoomDate}>
           Created on {new Date(item.createdAt).toLocaleDateString()}
@@ -69,105 +88,116 @@ export default function ChatRoomsScreen() {
   }
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Chat Rooms</Text>
+    <SafeAreaView style={styles.container}>
+      <Header
+        title="Chat Rooms"
+        showLeftIcon={false}
+        showRightIcon={true}
+        rightIcon="qr-code"
+        onRightPress={() => router.push("/scan-qr")}
+      />
+
       <FlatList
         data={chatRooms}
         renderItem={renderChatRoom}
         keyExtractor={(item) => item._id}
         contentContainerStyle={styles.listContent}
       />
-      <TouchableOpacity style={styles.createButton} onPress={() => router.push('/create-chat')}>
+      <TouchableOpacity
+        style={styles.createButton}
+        onPress={() => router.push("/create-chat")}
+      >
         <Ionicons name="add" size={24} color="white" />
         <Text style={styles.createButtonText}>Create New Chat Room</Text>
       </TouchableOpacity>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    marginTop:30,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
     marginTop: 10,
   },
   listContent: {
     flexGrow: 1,
     paddingBottom: 80,
+    paddingTop:20,
+    paddingHorizontal:10,
   },
   headerButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   headerButton: {
     padding: 8,
     marginLeft: 5,
-    backgroundColor:"red",
-
+    backgroundColor: "red",
   },
   chatRoomItem: {
-    backgroundColor: '#f8f8f8',
+    backgroundColor: "#ccc",
     padding: 16,
     borderRadius: 12,
     marginBottom: 12,
     borderWidth: 1,
-    borderColor: '#eee',
+    borderColor: "#eee",
   },
   chatRoomHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   chatRoomName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   chatRoomDate: {
-    color: '#666',
+    color: "#666",
     marginTop: 5,
     fontSize: 14,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   loadingText: {
     marginTop: 10,
   },
   emptyContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 100,
   },
   emptyText: {
     fontSize: 18,
-    color: '#888',
+    color: "#888",
     marginTop: 10,
   },
   emptySubText: {
     fontSize: 14,
-    color: '#aaa',
+    color: "#aaa",
     marginTop: 5,
   },
   createButton: {
-    backgroundColor: '#2196F3',
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#2196F3",
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     padding: 16,
     borderRadius: 10,
-    position: 'absolute',
-    bottom: 20,
+    position: "absolute",
+    bottom: 30,
     left: 20,
     right: 20,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -177,8 +207,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   createButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
     fontSize: 16,
     marginLeft: 5,
   },

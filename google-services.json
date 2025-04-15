@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "909157587410",
+    "project_id": "chat-ec2da",
+    "storage_bucket": "chat-ec2da.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:909157587410:android:f4a7697b7e86e3b19b500b",
+        "android_client_info": {
+          "package_name": "com.filipj90.chat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7cbn7uaWhn9tHB9OyIOZ8X1UbGhN8R-Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

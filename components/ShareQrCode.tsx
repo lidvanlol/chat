@@ -1,50 +1,46 @@
-import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, Text, Modal, Share, Platform } from 'react-native';
-import QRCode from 'react-native-qrcode-svg';
-import { Ionicons } from '@expo/vector-icons';
-import * as Clipboard from 'expo-clipboard';
-import { Id } from '@/convex/_generated/dataModel';
+import React, { useState } from "react";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  Modal,
+  Share,
+  Platform,
+} from "react-native";
+import QRCode from "react-native-qrcode-svg";
+import { Ionicons } from "@expo/vector-icons";
+import * as Clipboard from "expo-clipboard";
+import { Id } from "@/convex/_generated/dataModel";
 
 interface ShareQRCodeProps {
   chatRoomId: Id<"chatRooms">;
   chatName: string;
 }
 
-export default function ShareQRCode({ chatRoomId, chatName }: ShareQRCodeProps) {
+export default function ShareQRCode({
+  chatRoomId,
+  chatName,
+}: ShareQRCodeProps) {
   const [modalVisible, setModalVisible] = useState(false);
-  
+
   // Create the deep link URL - update with your actual app URL scheme
-  const appDomain = 'your-app-name.com'; // For web links
-  const appScheme = 'chat://chat[id]'; // For mobile deep links
-  const deepLink = Platform.OS === 'web' 
-    ? `https://${appDomain}/chat/${chatRoomId}`
-    : `${appScheme}chat/${chatRoomId}`;
-  
-  const handleShare = async () => {
-    try {
-      await Share.share({
-        message: `Join me in the "${chatName}" chat! ${deepLink}`,
-        url: deepLink, // iOS only
-      });
-    } catch (error) {
-      console.error('Error sharing chat:', error);
-    }
-  };
-  
-  const copyToClipboard = async () => {
-    await Clipboard.setStringAsync(deepLink);
-    alert('Link copied to clipboard!');
-  };
+  const appDomain = "your-app-name.com"; // For web links
+  const appScheme = "chat"; // For mobile deep links
+  const deepLink =
+    Platform.OS === "web"
+      ? `https://${appDomain}/chat/${chatRoomId}`
+      : `${appScheme}chat/${chatRoomId}`;
 
   return (
     <>
-      <TouchableOpacity 
-        style={styles.shareButton} 
+      <TouchableOpacity
+        style={styles.shareButton}
         onPress={() => setModalVisible(true)}
       >
         <Ionicons name="qr-code-outline" size={24} color="#2196F3" />
       </TouchableOpacity>
-      
+
       <Modal
         animationType="slide"
         transparent={true}
@@ -53,8 +49,8 @@ export default function ShareQRCode({ chatRoomId, chatName }: ShareQRCodeProps) 
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Share "{chatName}"</Text>
-            
+            <Text style={styles.modalTitle}>Share {chatName}</Text>
+
             <View style={styles.qrContainer}>
               <QRCode
                 value={deepLink}
@@ -63,21 +59,9 @@ export default function ShareQRCode({ chatRoomId, chatName }: ShareQRCodeProps) 
                 backgroundColor="white"
               />
             </View>
-            
-            <Text style={styles.linkText}>{deepLink}</Text>
-            
-            <View style={styles.buttonsRow}>
-              <TouchableOpacity style={styles.button} onPress={copyToClipboard}>
-                <Text style={styles.buttonText}>Copy Link</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity style={styles.button} onPress={handleShare}>
-                <Text style={styles.buttonText}>Share</Text>
-              </TouchableOpacity>
-            </View>
-            
-            <TouchableOpacity 
-              style={styles.closeButton} 
+
+            <TouchableOpacity
+              style={styles.closeButton}
               onPress={() => setModalVisible(false)}
             >
               <Text style={styles.closeButtonText}>Close</Text>
@@ -95,17 +79,17 @@ const styles = StyleSheet.create({
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
-    width: '85%',
-    backgroundColor: 'white',
+    width: "85%",
+    backgroundColor: "white",
     borderRadius: 20,
     padding: 20,
-    alignItems: 'center',
-    shadowColor: '#000',
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -116,45 +100,46 @@ const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 20,
   },
   qrContainer: {
     padding: 15,
-    backgroundColor: 'white',
+    backgroundColor: "white",
     borderRadius: 10,
     marginBottom: 20,
   },
   linkText: {
     fontSize: 12,
-    color: '#666',
+    color: "#666",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   buttonsRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     marginBottom: 15,
   },
   button: {
-    backgroundColor: '#2196F3',
+    backgroundColor: "#2196F3",
     paddingVertical: 12,
     paddingHorizontal: 25,
     borderRadius: 8,
     flex: 0.48,
-    alignItems: 'center',
+    alignItems: "center",
   },
   buttonText: {
-    color: 'white',
-    fontWeight: '600',
+    color: "white",
+    fontWeight: "600",
   },
   closeButton: {
     paddingVertical: 12,
-    width: '100%',
-    alignItems: 'center',
+    width: "100%",
+    alignItems: "center",
   },
   closeButtonText: {
-    color: '#666',
+    color: "#666",
+    fontSize: 20,
   },
 });

@@ -66,7 +66,8 @@ export default function CreateChatScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
-      <TouchableOpacity 
+      <TouchableOpacity
+      testID="back-button" 
         style={styles.backButton}
         onPress={() => router.back()}
       >
@@ -83,9 +84,12 @@ export default function CreateChatScreen() {
           value={chatName}
           onChangeText={setChatName}
           autoFocus
+          testID='input'
         />
         
-        <TouchableOpacity 
+        <TouchableOpacity
+        testID="create-button" 
+        accessibilityState={{ disabled: !chatName.trim() || isCreating }}
           style={[
             styles.createButton,
             (!chatName.trim() || isCreating) && styles.createButtonDisabled

@@ -1,17 +1,59 @@
-
-import React, { useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Stack } from "expo-router";
 import { ConvexProvider } from "convex/react";
-
+import { Platform } from "react-native";
 import { convex } from "../convex/react";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { UserProvider } from "@/context/UserContext";
-
+import * as Device from "expo-device";
+import * as Notifications from "expo-notifications";
+import { registerForPushNotificationsAsync } from "@/components/Notifications";
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const [expoPushToken, setExpoPushToken] = useState("");
+  const [channels, setChannels] = useState<Notifications.NotificationChannel[]>(
+    []
+  );
+
+  const [notification, setNotification] = useState<
+    Notifications.Notification | undefined
+  >(undefined);
+  const notificationListener = useRef<Notifications.EventSubscription>();
+  const responseListener = useRef<Notifications.EventSubscription>();
+
+  useEffect(() => {
+    registerForPushNotificationsAsync().then(
+      (token) => token && setExpoPushToken(token)
+    );
+
+    if (Platform.OS === "android") {
+      Notifications.getNotificationChannelsAsync().then((value) =>
+        setChannels(value ?? [])
+      );
+    }
+    notificationListener.current =
+      Notifications.addNotificationReceivedListener((notification) => {
+        setNotification(notification);
+      });
+
+    responseListener.current =
+      Notifications.addNotificationResponseReceivedListener((response) => {
+        console.log(response);
+      });
+
+    return () => {
+      notificationListener.current &&
+        Notifications.removeNotificationSubscription(
+          notificationListener.current
+        );
+      responseListener.current &&
+        Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  }, []);
+
   useEffect(() => {
     // Hide splash screen after a short delay
     const hideSplash = async () => {
@@ -28,23 +70,14 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <Stack
           screenOptions={{
-            headerStyle: {
-              backgroundColor: "#fff",
-            },
-            headerTintColor: "#2196F3",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
-            contentStyle: {
-              backgroundColor: "#fff",
-            },
+            headerShown:false
           }}
         >
           <Stack.Screen
             name="index"
             options={{
               title: "Chat Rooms",
-              headerShown: true,
+              headerShown: false,
             }}
           />
           <Stack.Screen
@@ -65,7 +98,7 @@ export default function RootLayout() {
             name="scan-qr"
             options={{
               title: "Scan QR Code",
-              headerShown: false, // We're using our own header in the scanner
+              headerShown: false,
               presentation: "fullScreenModal",
             }}
           />

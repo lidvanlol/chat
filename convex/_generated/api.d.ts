@@ -9,6 +9,8 @@
  */
 
 import type * as chatRooms from "../chatRooms.js";
+import type * as example from "../example.js";
+import type * as functions_push from "../functions/push.js";
 import type * as messages from "../messages.js";
 import type * as react from "../react.js";
 
@@ -28,6 +30,8 @@ import type {
  */
 declare const fullApi: ApiFromModules<{
   chatRooms: typeof chatRooms;
+  example: typeof example;
+  "functions/push": typeof functions_push;
   messages: typeof messages;
   react: typeof react;
 }>;
