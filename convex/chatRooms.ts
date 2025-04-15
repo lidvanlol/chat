@@ -1,4 +1,4 @@
-// convex/chatRooms.ts
+
 import { mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 
@@ -53,6 +53,14 @@ export const getChatRoom = query({
   },
 });
 
+export const getAllChatRooms = query({
+  handler: async (ctx) => {
+    const rooms = await ctx.db.query("chatRooms").collect();
+    return rooms;
+  },
+});
+
+
 // Get all chat rooms for a user
 export const getChatRoomsForUser = query({
   args: {
@@ -67,4 +75,36 @@ export const getChatRoomsForUser = query({
     
     return chatRooms;
   },
+});
+
+// convex/chatRooms.ts
+
+export const joinChatRoom = mutation({
+  args: {
+    chatRoomId: v.id("chatRooms"),
+    userId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existingMembership = await ctx.db
+      .query("chatRoomMembers")
+      .filter(q => 
+        q.and(
+          q.eq(q.field("chatRoomId"), args.chatRoomId),
+          q.eq(q.field("userId"), args.userId)
+        )
+      )
+      .first();
+
+    if (existingMembership) {
+      return { alreadyJoined: true };
+    }
+
+    await ctx.db.insert("chatRoomMembers", {
+      chatRoomId: args.chatRoomId,
+      userId: args.userId,
+      joinedAt: Date.now(),
+    });
+
+    return { success: true };
+  }
 });

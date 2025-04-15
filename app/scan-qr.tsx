@@ -1,4 +1,4 @@
-// app/scan-qr.tsx
+
 import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera, CameraType, CameraView,CameraViewRef,BarcodeScanningResult } from 'expo-camera';

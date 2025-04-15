@@ -1,4 +1,4 @@
-// convex/schema.ts
+
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
 
@@ -17,4 +17,12 @@ export default defineSchema({
     senderName: v.string(), // username
     timestamp: v.number(),
   }).index("byChatRoom", ["chatRoomId"]),
+
+  chatRoomMembers: defineTable({
+    chatRoomId: v.id("chatRooms"),
+    userId: v.string(),
+    joinedAt: v.number(),
+  }).index("byUser", ["userId"])
+    .index("byChatRoom", ["chatRoomId"]),
+
 });

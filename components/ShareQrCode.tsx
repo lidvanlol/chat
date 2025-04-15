@@ -1,4 +1,3 @@
-// app/components/ShareQRCode.tsx
 import React, { useState } from 'react';
 import { View, StyleSheet, TouchableOpacity, Text, Modal, Share, Platform } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
@@ -16,7 +15,7 @@ export default function ShareQRCode({ chatRoomId, chatName }: ShareQRCodeProps) 
   
   // Create the deep link URL - update with your actual app URL scheme
   const appDomain = 'your-app-name.com'; // For web links
-  const appScheme = 'your-app-scheme://'; // For mobile deep links
+  const appScheme = 'chat://chat[id]'; // For mobile deep links
   const deepLink = Platform.OS === 'web' 
     ? `https://${appDomain}/chat/${chatRoomId}`
     : `${appScheme}chat/${chatRoomId}`;

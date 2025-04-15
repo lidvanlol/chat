@@ -1,7 +1,8 @@
-// app/_layout.tsx
+
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import { ConvexProvider } from "convex/react";
+
 import { convex } from "../convex/react";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";

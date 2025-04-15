@@ -1,71 +1,65 @@
-// app/index.tsx
+
 import React,{useEffect} from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
-import { useQuery } from '../convex/react';
+import { useQuery,useMutation } from '../convex/react';
 import { api } from '../convex/_generated/api';
 import { Ionicons } from '@expo/vector-icons';
 import { useUser } from '@/context/UserContext';
 import { ChatRoom } from '../types/models';
-
+import { Id } from '@/convex/_generated/dataModel';
 export default function ChatRoomsScreen() {
   const { user, isLoading } = useUser();
-  
-  
-
-  
-  const renderHeaderRight = () => (
-    <View style={styles.headerButtons}>
-      <TouchableOpacity 
-        onPress={() => router.push('/scan-qr')}
-        style={styles.headerButton}
-      >
-        <Ionicons name="scan-outline" size={24} color="#2196F3" />
-      </TouchableOpacity>
-      <TouchableOpacity 
-        onPress={() => router.push('/create-chat')}
-        style={styles.headerButton}
-      >
-        <Ionicons name="add" size={24} color="#2196F3" />
-      </TouchableOpacity>
-    </View>
+  const chatRooms = useQuery(api.chatRooms.getAllChatRooms); // fetch ALL chat rooms
+  const joinChat = useMutation(api.chatRooms.joinChatRoom);
+  const myRooms = useQuery(
+    api.chatRooms.getChatRoomsForUser,
+    user ? { userId: user.userId } : "skip"
   );
 
-
-
-  // Fetch chat rooms from Convex
-  const chatRooms = useQuery(
-    api.chatRooms.getChatRoomsForUser, 
-    user ? { userId: user.userId } : "skip" // Skip query if userId is not yet available
-  );
-
-  const navigateToChatRoom = (id: string, name: string) => {
-    router.push({
-      pathname: '/chat/[id]',
-      params: { id, name }
-    });
+  const isUserInRoom = (chatRoomId: string) => {
+    return myRooms?.some((room) => room._id === chatRoomId);
   };
 
-  const navigateToCreateChat = () => {
-    router.push('/create-chat');
+  const handleJoin = async (chatRoomId: string, name: string) => {
+    if (!user) return;
+    try {
+      const res = await joinChat({
+        chatRoomId: chatRoomId as Id<"chatRooms">,
+        userId: user.userId,
+      });
+      
+      if (res?.alreadyJoined) {
+        console.log('User is already a member');
+      }
+      router.push({ pathname: '/chat/[id]', params: { id: chatRoomId, name } });
+    } catch (err) {
+      console.error("Failed to join", err);
+    }
   };
 
-  const renderChatRoom = ({ item }: { item: ChatRoom }) => (
-    <TouchableOpacity
-      style={styles.chatRoomItem}
-      onPress={() => navigateToChatRoom(item._id, item.name)}
-    >
-      <View style={styles.chatRoomHeader}>
-        <Text style={styles.chatRoomName}>{item.name}</Text>
-        <Ionicons name="chevron-forward" size={20} color="#888" />
-      </View>
-      <Text style={styles.chatRoomDate}>
-        Created on {new Date(item.createdAt).toLocaleDateString()}
-      </Text>
-    </TouchableOpacity>
-  );
+  const renderChatRoom = ({ item }: { item: ChatRoom }) => {
+    const joined = isUserInRoom(item._id);
+    return (
+      <TouchableOpacity
+        style={styles.chatRoomItem}
+        onPress={() =>
+          joined ? router.push({ pathname: '/chat/[id]', params: { id: item._id, name: item.name } }) :
+          handleJoin(item._id, item.name)
+        }
+      >
+        <View style={styles.chatRoomHeader}>
+          <Text style={styles.chatRoomName}>{item.name}</Text>
+          <Ionicons name={joined ? "chevron-forward" : "log-in-outline"} size={20} color="#888" />
+        </View>
+        <Text style={styles.chatRoomDate}>
+          Created on {new Date(item.createdAt).toLocaleDateString()}
+        </Text>
+      </TouchableOpacity>
+    );
+  };
 
-  if (isLoading || !user) {
+  if (isLoading || !user || !chatRooms) {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#2196F3" />
@@ -77,39 +71,13 @@ export default function ChatRoomsScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Chat Rooms</Text>
-      <TouchableOpacity 
-        onPress={() => router.push('/scan-qr')}
-        style={styles.headerButton}
-      >
-        <Text>Scan Qr</Text>
-      </TouchableOpacity>
-      {chatRooms ? (
-        <FlatList
-          data={chatRooms}
-          renderItem={renderChatRoom}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.listContent}
-          ListEmptyComponent={
-            <View style={styles.emptyContainer}>
-              <Ionicons name="chatbubble-outline" size={60} color="#ccc" />
-              <Text style={styles.emptyText}>No chat rooms found</Text>
-              <Text style={styles.emptySubText}>Create your first chat room</Text>
-            </View>
-          }
-        />
-      ) : (
-        <View style={styles.loadingContainer}>
-          <ActivityIndicator size="small" color="#2196F3" />
-          <Text>Loading chat rooms...</Text>
-        </View>
-      )}
-     
-
-
-      <TouchableOpacity 
-        style={styles.createButton}
-        onPress={navigateToCreateChat}
-      >
+      <FlatList
+        data={chatRooms}
+        renderItem={renderChatRoom}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={styles.listContent}
+      />
+      <TouchableOpacity style={styles.createButton} onPress={() => router.push('/create-chat')}>
         <Ionicons name="add" size={24} color="white" />
         <Text style={styles.createButtonText}>Create New Chat Room</Text>
       </TouchableOpacity>

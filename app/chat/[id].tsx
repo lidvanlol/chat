@@ -1,4 +1,4 @@
-// app/chat/[id].tsx
+
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   View, 
@@ -20,10 +20,6 @@ import { Message } from '@/types/models';
 import { Id } from '../../convex/_generated/dataModel';
 import ShareQRCode from '@/components/ShareQrCode';
 
-interface ChatRoomParams {
-  id: Id<"chatRooms">;
-  name: string;
-}
 
 export default function ChatRoomScreen() {
   const { id, name } = useLocalSearchParams();

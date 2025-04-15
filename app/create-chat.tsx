@@ -1,4 +1,4 @@
-// app/create-chat.tsx
+
 import React, { useState } from 'react';
 import { 
   View, 
@@ -23,21 +23,26 @@ export default function CreateChatScreen() {
 
   // Create chat room mutation
   const createChatRoom = useMutation(api.chatRooms.createChatRoom);
+  const joinChatRoom = useMutation(api.chatRooms.joinChatRoom);
 
   const handleCreateChat = async () => {
     if (!chatName.trim() || !user) return;
-    
+  
     setIsCreating(true);
     try {
       const newChatRoom = await createChatRoom({
         name: chatName.trim(),
         userId: user.userId,
       });
-      
-      // Navigate to the new chat room
+  
+      await joinChatRoom({
+        chatRoomId: newChatRoom.id,
+        userId: user.userId,
+      });
+  
       router.push({
         pathname: '/chat/[id]',
-        params: { id: newChatRoom.id, name: newChatRoom.name }
+        params: { id: newChatRoom.id, name: newChatRoom.name },
       });
     } catch (error) {
       console.error('Error creating chat room:', error);
