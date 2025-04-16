@@ -1,50 +1,18 @@
-# Welcome to your Expo app 👋
+Welcome to Simple Chat Application that uses react native expo and convex for backend.
+1.How to use
+* TO use this app you should get repo on your machine and do this:
+* Frontend run - npm run start 
+* Backend run - npx convex dev to run localy convex database and npx convex deploy if you want to deploy db to server
+* To run tests you should do command npm run test
+* To run lint and format you can run npm run lint and npm run format
+* For Backend to work when repo is on machine create .env.local file and put this inside
+* CONVEX_DEPLOYMENT=dev:helpful-albatross-575 # team: filip-e571a, project: chat-1d2cc
+* EXPO_PUBLIC_CONVEX_URL=https://helpful-albatross-575.convex.cloud
+this is needed becouse of convex file for connection
+2.*App will create Users based on device and then he can create chat room and join.Other users will see new chat room appear and they can join it to chat.
+  *Qr Code is inside chat so user can scan it with device camera and then enter chat room.  
+3.Notificions setup for ios we need to have apple account connected with expo eas and android needs to have google-services.json file from firebase and chat-file which is from google that is genereted trhough eas credentials.
+  When that is downloaded we need to do this :
+  First run npx expo prebuild --clean to create android and ios folder then run npx expo run:android or run:ios to build app as development.
+  Notifications are setuped in Layout but they cant be triggered from backend and they are triggered througfh client
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-    npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
