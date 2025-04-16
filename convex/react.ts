@@ -4,7 +4,7 @@ import { ConvexReactClient } from 'convex/react';
 const convexUrl = 'https://helpful-albatross-575.convex.cloud';
 
 if (!convexUrl) {
-  throw new Error('EXPO_PUBLIC_CONVEX_URL is not defined');
+  throw new Error('Url is not defined');
 }
 
 export const convex = new ConvexReactClient(convexUrl);
