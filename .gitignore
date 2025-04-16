@@ -36,3 +36,6 @@ yarn-error.*
 *.tsbuildinfo
 
 app-example
+google-services.json
+chat-ec2da-firebase-adminsdk-fbsvc-38efa03398.json
+utils/firebase.ts
