@@ -15,4 +15,5 @@ this is needed becouse of convex file for connection
   When that is downloaded we need to do this :
   First run npx expo prebuild --clean to create android and ios folder then run npx expo run:android or run:ios to build app as development.
   Notifications are setuped in Layout but they cant be triggered from backend and they are triggered througfh client
+  Notification is improvised on client with useEffect when users enters chat and he recives messege that way becouse i could not solve to get notification from backend.
 
