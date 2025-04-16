@@ -1,10 +1,10 @@
 import React from 'react';
-import { render, fireEvent, waitFor } from '@testing-library/react-native';
+import { render } from '@testing-library/react-native';
 import ChatRoomScreen from '@/app/chat/[id]'; // Adjust path to your screen
 import { useUser } from '@/context/UserContext';
-import { useQuery, useMutation } from '@/convex/react';
-import { api } from '@/convex/_generated/api';
-jest.mock("expo-font");
+import { useQuery } from '@/convex/react';
+
+jest.mock('expo-font');
 jest.mock('@/context/UserContext', () => ({
   useUser: jest.fn(),
 }));
@@ -66,9 +66,7 @@ describe('ChatRoomScreen', () => {
     (useQuery as jest.Mock).mockReturnValue([]);
 
     const { getByText } = render(<ChatRoomScreen />);
-    expect(
-      getByText('No messages yet. Be the first to send a message!')
-    ).toBeTruthy();
+    expect(getByText('No messages yet. Be the first to send a message!')).toBeTruthy();
   });
 
   it('renders messages when available', () => {
@@ -77,9 +75,7 @@ describe('ChatRoomScreen', () => {
     const { getByText } = render(<ChatRoomScreen />);
     expect(getByText('Hello there!')).toBeTruthy();
     expect(getByText('Hi!')).toBeTruthy();
-    
+
     expect(getByText('OtherUser')).not.toBeNull();
   });
-
-
 });

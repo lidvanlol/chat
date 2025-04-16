@@ -1,14 +1,14 @@
-
 import React, { useState } from 'react';
-import { 
-  View, 
-  Text, 
-  TextInput, 
-  TouchableOpacity, 
-  StyleSheet, 
-  ActivityIndicator, 
-  KeyboardAvoidingView, 
-  Platform 
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Alert,
 } from 'react-native';
 import { router } from 'expo-router';
 import { useMutation } from '../convex/react';
@@ -27,26 +27,26 @@ export default function CreateChatScreen() {
 
   const handleCreateChat = async () => {
     if (!chatName.trim() || !user) return;
-  
+
     setIsCreating(true);
     try {
       const newChatRoom = await createChatRoom({
         name: chatName.trim(),
         userId: user.userId,
       });
-  
+
       await joinChatRoom({
         chatRoomId: newChatRoom.id,
         userId: user.userId,
       });
-  
+
       router.push({
         pathname: '/chat/[id]',
         params: { id: newChatRoom.id, name: newChatRoom.name },
       });
     } catch (error) {
       console.error('Error creating chat room:', error);
-      alert('Failed to create chat room');
+      Alert.alert('Failed to create chat room');
     } finally {
       setIsCreating(false);
     }
@@ -67,15 +67,15 @@ export default function CreateChatScreen() {
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <TouchableOpacity
-      testID="back-button" 
+        testID="back-button"
         style={styles.backButton}
         onPress={() => router.back()}
       >
         <Ionicons name="arrow-back" size={24} color="#2196F3" />
       </TouchableOpacity>
-      
+
       <Text style={styles.title}>Create New Chat Room</Text>
-      
+
       <View style={styles.formContainer}>
         <Text style={styles.label}>Chat Room Name</Text>
         <TextInput
@@ -84,15 +84,15 @@ export default function CreateChatScreen() {
           value={chatName}
           onChangeText={setChatName}
           autoFocus
-          testID='input'
+          testID="input"
         />
-        
+
         <TouchableOpacity
-        testID="create-button" 
-        accessibilityState={{ disabled: !chatName.trim() || isCreating }}
+          testID="create-button"
+          accessibilityState={{ disabled: !chatName.trim() || isCreating }}
           style={[
             styles.createButton,
-            (!chatName.trim() || isCreating) && styles.createButtonDisabled
+            (!chatName.trim() || isCreating) && styles.createButtonDisabled,
           ]}
           onPress={handleCreateChat}
           disabled={!chatName.trim() || isCreating}
@@ -115,8 +115,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   backButton: {
-    marginTop: 10,
-    marginBottom: 20,
+    marginTop: 30,
+    marginBottom: 30,
   },
   title: {
     fontSize: 28,

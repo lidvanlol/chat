@@ -11,8 +11,8 @@ interface HeaderProps {
   onRightPress?: () => void;
   leftIconColor?: string;
   rightIconColor?: string;
-  showLeftIcon?:boolean;
-  showRightIcon?:boolean;
+  showLeftIcon?: boolean;
+  showRightIcon?: boolean;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -24,24 +24,13 @@ const Header: React.FC<HeaderProps> = ({
   leftIconColor = '#000',
   rightIconColor = '#000',
   showLeftIcon,
-  showRightIcon
+  showRightIcon,
 }) => {
   return (
     <View style={styles.container}>
       {/* Left Icon */}
-      <TouchableOpacity 
-        onPress={onLeftPress} 
-        style={styles.iconContainer}
-        disabled={!onLeftPress}
-        
-      >
-        {showLeftIcon && leftIcon && (
-          <Ionicons 
-            name={leftIcon} 
-            size={24} 
-            color={leftIconColor} 
-          />
-        )}
+      <TouchableOpacity onPress={onLeftPress} style={styles.iconContainer} disabled={!onLeftPress}>
+        {showLeftIcon && leftIcon && <Ionicons name={leftIcon} size={24} color={leftIconColor} />}
       </TouchableOpacity>
 
       {/* Title */}
@@ -52,17 +41,13 @@ const Header: React.FC<HeaderProps> = ({
       </View>
 
       {/* Right Icon */}
-      <TouchableOpacity 
-        onPress={onRightPress} 
+      <TouchableOpacity
+        onPress={onRightPress}
         style={styles.iconContainer}
         disabled={!onRightPress}
       >
         {rightIcon && showRightIcon && (
-          <Ionicons 
-            name={rightIcon} 
-            size={24} 
-            color={rightIconColor} 
-          />
+          <Ionicons name={rightIcon} size={24} color={rightIconColor} />
         )}
       </TouchableOpacity>
     </View>
@@ -79,7 +64,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#f5f5f5',
     borderBottomWidth: 1,
     borderBottomColor: '#111',
-    
   },
   iconContainer: {
     width: 40,
@@ -93,8 +77,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   title: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 20,
+    fontFamily: 'Roboto-Bold',
     textAlign: 'center',
   },
 });

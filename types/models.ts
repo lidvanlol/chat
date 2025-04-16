@@ -1,7 +1,7 @@
-import { Id } from "../convex/_generated/dataModel";
+import { Id } from '../convex/_generated/dataModel';
 
 export interface ChatRoom {
-  _id: Id<"chatRooms">;
+  _id: Id<'chatRooms'>;
   name: string;
   createdAt: number;
   createdBy: string;
@@ -9,8 +9,8 @@ export interface ChatRoom {
 }
 
 export interface Message {
-  _id: Id<"messages">;
-  chatRoomId: Id<"chatRooms">;
+  _id: Id<'messages'>;
+  chatRoomId: Id<'chatRooms'>;
   content: string;
   sender: string;
   senderName: string;

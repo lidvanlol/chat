@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server";
-import { v } from "convex/values";
+import { defineSchema, defineTable } from 'convex/server';
+import { v } from 'convex/values';
 
 export default defineSchema({
   chatRooms: defineTable({
@@ -7,27 +7,27 @@ export default defineSchema({
     createdAt: v.number(),
     createdBy: v.string(), // user ID
     isActive: v.boolean(),
-  }).index("byCreatedAt", ["createdAt"]),
+  }).index('byCreatedAt', ['createdAt']),
 
   messages: defineTable({
-    chatRoomId: v.id("chatRooms"),
+    chatRoomId: v.id('chatRooms'),
     content: v.string(),
     sender: v.string(), // user ID or device ID
     senderName: v.string(), // username
     timestamp: v.number(),
-  }).index("byChatRoom", ["chatRoomId"]),
+  }).index('byChatRoom', ['chatRoomId']),
 
   chatRoomMembers: defineTable({
-    chatRoomId: v.id("chatRooms"),
+    chatRoomId: v.id('chatRooms'),
     userId: v.string(),
     joinedAt: v.number(),
   })
-    .index("byUser", ["userId"])
-    .index("byChatRoom", ["chatRoomId"]),
-    users: defineTable(
-      v.object({
-        name: v.string(),
-        pushToken: v.optional(v.string())
-      })
-    ).index("by_name", ["name"]),
+    .index('byUser', ['userId'])
+    .index('byChatRoom', ['chatRoomId']),
+  users: defineTable(
+    v.object({
+      name: v.string(),
+      pushToken: v.optional(v.string()),
+    }),
+  ).index('by_name', ['name']),
 });

@@ -1,18 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import {
-  Camera,
-  CameraType,
-  CameraView,
-  CameraViewRef,
-  BarcodeScanningResult,
-} from "expo-camera";
+import React, { useState, useEffect, useRef } from 'react';
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from 'react-native';
+import { Camera, CameraView, BarcodeScanningResult } from 'expo-camera';
 
-import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
-import { useMutation } from "../convex/react";
-import { api } from "../convex/_generated/api";
-import { Id } from "../convex/_generated/dataModel";
+import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
+import { useMutation } from '../convex/react';
+import { api } from '../convex/_generated/api';
+import { Id } from '../convex/_generated/dataModel';
 
 export default function ScanQRScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -24,7 +18,7 @@ export default function ScanQRScreen() {
   useEffect(() => {
     const getCameraPermissions = async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
+      setHasPermission(status === 'granted');
     };
 
     getCameraPermissions();
@@ -37,24 +31,24 @@ export default function ScanQRScreen() {
 
     try {
       // Extract chatRoomId from the scanned URL
-      const urlParts = data.split("/");
+      const urlParts = data.split('/');
       const potentialChatId = urlParts[urlParts.length - 1];
 
       // Validate the chatRoomId and check if it exists in Convex
       const exists = await checkChatRoom({
-        chatRoomId: potentialChatId as Id<"chatRooms">,
+        chatRoomId: potentialChatId as Id<'chatRooms'>,
       });
 
       if (exists) {
         // Navigate to the chat room
         router.push(`/chat/${potentialChatId}`);
       } else {
-        alert("Invalid QR code or chat room doesn't exist");
+        Alert.alert("Invalid QR code or chat room doesn't exist");
         setScanned(false);
       }
     } catch (error) {
-      console.error("Error processing QR code:", error);
-      alert("Failed to process QR code");
+      console.error('Error processing QR code:', error);
+      Alert.alert('Failed to process QR code');
       setScanned(false);
     }
   };
@@ -72,7 +66,7 @@ export default function ScanQRScreen() {
       <CameraView
         style={StyleSheet.absoluteFillObject}
         barcodeScannerSettings={{
-          barcodeTypes: ["qr"],
+          barcodeTypes: ['qr'],
         }}
         onBarcodeScanned={handleBarCodeScanned}
         ref={cameraRef}
@@ -89,20 +83,14 @@ export default function ScanQRScreen() {
       </View>
 
       <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={() => router.back()}
-        >
+        <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
           <Ionicons name="arrow-back" size={24} color="white" />
         </TouchableOpacity>
         <Text style={styles.headerText}>Scan Chat QR Code</Text>
       </View>
 
       {scanned && (
-        <TouchableOpacity
-          style={styles.scanAgainButton}
-          onPress={() => setScanned(false)}
-        >
+        <TouchableOpacity style={styles.scanAgainButton} onPress={() => setScanned(false)}>
           <Text style={styles.scanAgainText}>Scan Again</Text>
         </TouchableOpacity>
       )}
@@ -113,22 +101,22 @@ export default function ScanQRScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: "column",
-    justifyContent: "center",
+    flexDirection: 'column',
+    justifyContent: 'center',
   },
   header: {
-    position: "absolute",
+    position: 'absolute',
     top: 40,
     left: 0,
     right: 0,
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     paddingHorizontal: 15,
   },
   headerText: {
-    color: "white",
+    color: 'white',
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginLeft: 15,
   },
   backButton: {
@@ -136,40 +124,40 @@ const styles = StyleSheet.create({
   },
   overlay: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   unfilled: {
     flex: 1,
   },
   scanRow: {
-    flexDirection: "row",
+    flexDirection: 'row',
     height: 250,
   },
   scanSquare: {
     width: 250,
     height: 250,
     borderWidth: 2,
-    borderColor: "white",
-    backgroundColor: "transparent",
+    borderColor: 'white',
+    backgroundColor: 'transparent',
   },
   scanAgainButton: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 80,
-    alignSelf: "center",
-    backgroundColor: "#2196F3",
+    alignSelf: 'center',
+    backgroundColor: '#2196F3',
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 10,
   },
   scanAgainText: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
   },
   infoText: {
     flex: 1,
     fontSize: 16,
-    textAlign: "center",
+    textAlign: 'center',
     marginTop: 100,
   },
 });

@@ -27,46 +27,46 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Try to get user ID and username from AsyncStorage
         let storedUserId = await AsyncStorage.getItem('userId');
         let storedUsername = await AsyncStorage.getItem('username');
-        
+
         // If user ID doesn't exist, create one based on device info
         if (!storedUserId) {
           storedUserId = `user_${Device.deviceName || 'unknown'}_${Date.now()}`;
           await AsyncStorage.setItem('userId', storedUserId);
         }
-        
+
         // If username doesn't exist, create a default one
         if (!storedUsername) {
           storedUsername = `User_${Math.floor(Math.random() * 10000)}`;
           await AsyncStorage.setItem('username', storedUsername);
         }
-        
+
         setUser({
           userId: storedUserId,
-          username: storedUsername
+          username: storedUsername,
         });
       } catch (error) {
         console.error('Error initializing user:', error);
         // Fallback values
         setUser({
           userId: `anonymous_${Date.now()}`,
-          username: 'Anonymous'
+          username: 'Anonymous',
         });
       } finally {
         setIsLoading(false);
       }
     };
-    
+
     initUser();
   }, []);
 
   const setUsername = async (username: string): Promise<void> => {
     if (!user) return;
-    
+
     try {
       await AsyncStorage.setItem('username', username);
       setUser({
         ...user,
-        username
+        username,
       });
     } catch (error) {
       console.error('Error setting username:', error);
@@ -75,8 +75,6 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   return (
-    <UserContext.Provider value={{ user, isLoading, setUsername }}>
-      {children}
-    </UserContext.Provider>
+    <UserContext.Provider value={{ user, isLoading, setUsername }}>{children}</UserContext.Provider>
   );
 };
